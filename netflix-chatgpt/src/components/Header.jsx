@@ -7,11 +7,13 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
 import { LOGO } from "../utils/constants";
+import { toggleSearchView } from "../utils/gptSlice";
 
 const Header = () => {
     const navigate = useNavigate();
     const user = useSelector((store) => store.user);
     const dispatch = useDispatch();
+    const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
     const handleLogOut = () => {
         signOut(auth)
             .then(() => {
@@ -48,12 +50,22 @@ const Header = () => {
         return () => unsubscribe();
     }, []);
 
+    const handleGptSearch = () => {
+        dispatch(toggleSearchView());
+    };
+
     return (
         <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between items-center">
             <img className="w-44" src={LOGO} alt="logo" />
 
             {user && (
                 <div>
+                    <button
+                        className="py-2 px-4 mx-4 my-2 bg-red-800 text-white rounded-lg"
+                        onClick={handleGptSearch}
+                    >
+                        {showGptSearch ? "Home Page" : "GPT Search"}
+                    </button>
                     <button
                         className="font-bold text-white cursor-pointer"
                         onClick={handleLogOut}
